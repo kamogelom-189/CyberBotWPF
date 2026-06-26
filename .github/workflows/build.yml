@@ -1,0 +1,32 @@
+name: Build CyberBot WPF
+
+# Run this workflow whenever code is pushed or a pull request is opened
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    # WPF needs the .NET Desktop Runtime, which is only available on Windows runners
+    runs-on: windows-latest
+
+    steps:
+      # 1. Check out your repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Install the .NET SDK that matches your csproj (net10.0-windows)
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # 3. Restore NuGet packages (MySqlConnector, etc.)
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # 4. Build the project
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
