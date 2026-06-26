@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.IO;
-using System.Threading.Tasks;
-using System.Windows; 
+using System.Windows;
 
 namespace CyberBotWPF;
 
 public static class VoiceService
 {
-    private const string WavRelativePath = "assets/greeting.wav";
+ 
+    private static readonly string WavRelativePath = Path.Combine("assets", "greeting.wav");
 
     public static bool Play()
     {
@@ -15,31 +15,25 @@ public static class VoiceService
 
         string wavPath = Path.Combine(AppContext.BaseDirectory, WavRelativePath);
         
-        // DEBUG CHECK: If the file is missing, tell us exactly where it's looking!
         if (!File.Exists(wavPath)) 
         {
-            MessageBox.Show($"Audio file missing!\nLooking in: {wavPath}", "Audio Debug Info");
+            MessageBox.Show($"Audio file missing!\nLooking in: {wavPath}", "Error");
             return false;
         }
 
         try
         {
-            Task.Run(() =>
-            {
-                try
-                {
-                    using var player = new System.Media.SoundPlayer(wavPath);
-                    player.PlaySync();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Playback error: {ex.Message}");
-                }
-            });
+            // SoundPlayer.Play() naturally runs on a background thread.
+            // We don't wrap it in a 'using' block here because it needs to stay 
+            // alive in memory while the sound plays.
+            var player = new System.Media.SoundPlayer(wavPath);
+            player.Play(); 
+            
             return true;
         }
-        catch
+        catch (Exception ex)
         {
+            MessageBox.Show($"Playback error: {ex.Message}");
             return false;
         }
     }
