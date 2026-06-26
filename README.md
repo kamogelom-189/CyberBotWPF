@@ -1,3 +1,7 @@
+youtube link
+https://youtu.be/Cp8w4kSYWEc
+
+
 # CyberBot Companion — Part 3 (Task Assistant, Quiz, NLP, Activity Log)
 
 This continues the existing **WPF** chatbot project (`CyberBotWPF`). Nothing from
